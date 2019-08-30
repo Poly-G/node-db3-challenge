@@ -27,3 +27,12 @@ function findSteps(scheme_id) {
     .select("s.id", "sc.scheme_name", "s.step_number", "s.instructions")
     .where({ scheme_id });
 }
+
+async function add(scheme) {
+  try {
+    const [newId] = await db("schemes").insert(scheme);
+    return await findById(newId);
+  } catch (err) {
+    throw new Error(err);
+  }
+}
