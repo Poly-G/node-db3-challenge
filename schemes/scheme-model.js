@@ -36,3 +36,14 @@ async function add(scheme) {
     throw new Error(err);
   }
 }
+
+async function update() {
+  try {
+    const updateItem = await db("schemes")
+      .update(edits)
+      .where({ id });
+    return updateItem;
+  } catch {
+    throw new Error(err);
+  }
+}
