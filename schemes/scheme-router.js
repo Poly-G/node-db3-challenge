@@ -57,25 +57,22 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.post("/:id/steps", (req, res) => {
+router.post("/:id/steps", async (req, res) => {
   const stepData = req.body;
   const { id } = req.params;
 
-  Schemes.findById(id)
-    .then(scheme => {
-      if (scheme) {
-        Schemes.addStep(stepData, id).then(step => {
-          res.status(201).json(step);
-        });
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id." });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to create new step" });
-    });
+  try {
+    const scheme = await Schemes.findById(id);
+
+    if (scheme) {
+      const step = await Schemes.addStep(stepData, id);
+      res.status(201).json(step);
+    } else {
+      res.status(404).json({ message: "Could not find scheme with given id." });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Failed to create new step" });
+  }
 });
 
 router.put("/:id", (req, res) => {
