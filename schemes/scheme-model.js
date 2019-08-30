@@ -47,3 +47,15 @@ async function update() {
     throw new Error(err);
   }
 }
+
+async function remove(id) {
+  try {
+    deletedPost = await findById(id);
+    const getPost = await db("schemes")
+      .where({ id })
+      .del();
+    return getPost ? deletedPost : null;
+  } catch {
+    throw new Error(err);
+  }
+}
