@@ -75,25 +75,22 @@ router.post("/:id/steps", async (req, res) => {
   }
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   const { id } = req.params;
   const changes = req.body;
 
-  Schemes.findById(id)
-    .then(scheme => {
-      if (scheme) {
-        Schemes.update(changes, id).then(updatedScheme => {
-          res.json(updatedScheme);
-        });
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to update scheme" });
-    });
+  try {
+    const scheme = await Schemes.findById(id);
+
+    if (scheme) {
+      const updatedScheme = await Schemes.update(changes, id);
+      res.json(updatedScheme);
+    } else {
+      res.status(404).json({ message: "Could not find scheme with given id" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update scheme" });
+  }
 });
 
 router.delete("/:id", (req, res) => {
