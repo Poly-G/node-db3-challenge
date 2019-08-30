@@ -29,22 +29,22 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.get("/:id/steps", (req, res) => {
+router.get("/:id/steps", async (req, res) => {
   const { id } = req.params;
 
-  Schemes.findSteps(id)
-    .then(steps => {
-      if (steps.length) {
-        res.json(steps);
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find steps for given scheme" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to get steps" });
-    });
+  try {
+    const steps = await Schemes.findSteps(id);
+
+    if (steps.length) {
+      res.json(steps);
+    } else {
+      res
+        .status(404)
+        .json({ message: "Could not find steps for given scheme" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Failed to get steps" });
+  }
 });
 
 router.post("/", (req, res) => {
