@@ -93,22 +93,20 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
-  Schemes.remove(id)
-    .then(deleted => {
-      if (deleted) {
-        res.json({ removed: deleted });
-      } else {
-        res
-          .status(404)
-          .json({ message: "Could not find scheme with given id" });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({ message: "Failed to delete scheme" });
-    });
+  try {
+    const deleted = await Schemes.remove(id);
+
+    if (deleted) {
+      res.json({ removed: deleted });
+    } else {
+      res.status(404).json({ message: "Could not find scheme with given id" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete scheme" });
+  }
 });
 
 module.exports = router;
