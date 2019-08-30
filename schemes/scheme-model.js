@@ -10,3 +10,13 @@ module.exports = {
   update,
   remove
 };
+
+function find() {
+  return db("schemes");
+}
+
+function findById() {
+  return db("schemes")
+    .where({ id })
+    .first();
+}
